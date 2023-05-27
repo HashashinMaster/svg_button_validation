@@ -12,18 +12,26 @@ const svg = d3
   .attr("height", height);
 
 /**
- * adding path element to the svg
+ * adding boxPath and curvePath elements to the svg
  */
-const path = svg.append("path");
+const boxPath = svg.append("path");
+const curvePath = svg.append("path");
 
 /**
- * Creating a box with path and initializing
- * brezier curves
+ * Creating a box path and
  */
-path
-  .attr("d", "M 50 40, h 240 ,v 80, h-240, v-80 c 0 0, 0 0, 0 0  ")
+boxPath
+  .attr("d", "M 50 40, h 240 ,v 80, h-240, v-80  ")
   .attr("fill", "red")
   .attr("stroke-width", "2px");
+/**
+ * initializing brezier curves
+ */
+curvePath
+  .attr("d", "c 0 0, 0 0, 0 0 ")
+  .attr("fill", "white")
+  .attr("stroke-width", "2px")
+  .attr("stroke", "white");
 
 /**
  * Defining the Shape Object to store mouse position
@@ -43,36 +51,51 @@ const pathValues: shapeValues = {
  * adding mouse enter event to know from where
  * the mouse entered the box
  */
-path.on("mouseenter", function (e: MouseEvent) {
+boxPath.on("mouseenter", function (e: MouseEvent) {
   const { offsetY } = e;
+
   // Cheking if the mouse enter from top of the box
   if (offsetY <= 50 + 20) {
     pathValues.cordinates = 40;
     pathValues.destination = "top";
-    pathValues.line = ["0 30", "90 30", "90 0"];
+    pathValues.line = ["0 40", "90 40", "90 0"];
   }
+
   // Cheking if the mouse enter from bottom of the box
   if (offsetY <= 120 + 20 && offsetY > 50 + 20) {
     pathValues.cordinates = 120;
     pathValues.destination = "bottom";
-    pathValues.line = ["0 -30", "90 -30", "90 0"];
+    pathValues.line = ["0 -40", "90 -40", "90 0"];
   }
 });
 
 /**
- * Adding mouse move event to change the curve coordinates
+ * Adding mouse move event to change the brezier curve coordinates
  */
-path.on("mousemove", function (e: MouseEvent) {
+boxPath.on("mousemove", function (e: MouseEvent) {
   const { offsetY, offsetX } = e;
 
   if (offsetY <= 50 + 20) console.log("ja mn lfo9e");
   if (offsetY <= 120 + 20 && offsetY > 50 + 20) console.log("ja mn lt7t");
-  path
+  if (pathValues.destination === "top") {
+    pathValues.line[0] = `0 ${offsetY}`;
+    pathValues.line[1] = `90 ${offsetY}`;
+  } else {
+    pathValues.line[0] = `0 ${-offsetY + 40}`;
+    pathValues.line[1] = `90 ${-offsetY + 40}`;
+  }
+  /*
+  , M ${offsetX + -30} ${
+        pathValues.destination === "bottom" ? 40 : 120
+      } c ${pathValues.line.join(", ")}, M ${offsetX + -30}
+  */
+  curvePath
     .transition()
     .attr(
       "d",
-      `M 50 40, h 240 ,v 80, h-240, v-80 ,M ${offsetX} ${
-        pathValues.cordinates
-      } c ${pathValues.line.join(", ")}`
-    );
+      `M ${offsetX + -30} ${pathValues.cordinates} c ${pathValues.line.join(
+        ", "
+      )}`
+    )
+    .duration(100);
 });
