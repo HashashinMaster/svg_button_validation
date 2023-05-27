@@ -16,6 +16,7 @@ const svg = d3
  */
 const boxPath = svg.append("path");
 const curvePath = svg.append("path");
+const curvePathMirror = svg.append("path");
 
 /**
  * Creating a box path and
@@ -30,6 +31,11 @@ boxPath
 curvePath
   .attr("d", "c 0 0, 0 0, 0 0 ")
   .attr("fill", "white")
+  .attr("stroke-width", "2px")
+  .attr("stroke", "white");
+curvePathMirror
+  .attr("d", "c 0 0, 0 0, 0 0 ")
+  .attr("fill", "red")
   .attr("stroke-width", "2px")
   .attr("stroke", "white");
 
@@ -80,10 +86,10 @@ boxPath.on("mousemove", function (e: MouseEvent) {
     pathValues.line[0] = `0 ${offsetY}`;
     pathValues.line[1] = `90 ${offsetY}`;
   } else {
-  /**
-   * when he goes in the bottom i calculate how much it lost from
-   * it's originals size: original size ((originalSize - boxSize) - (mousePos - originalSize))
-   */
+    /**
+     * when he goes in the bottom i calculate how much it lost from
+     * it's originals size: original size ((originalSize - boxSize) - (mousePos - originalSize))
+     */
     pathValues.line[0] = `0 -${
       40 + (offsetY - 40 > 40 ? 80 - (offsetY - 40) : 40)
     }`;
@@ -91,21 +97,17 @@ boxPath.on("mousemove", function (e: MouseEvent) {
       40 + (offsetY - 40 > 40 ? 80 - (offsetY - 40) : 40)
     }`;
   }
-  /*
-  120-40
-  80
-  78
-  , M ${offsetX + -30} ${
-        pathValues.destination === "bottom" ? 40 : 120
-      } c ${pathValues.line.join(", ")}, M ${offsetX + -30}
-  */
-  curvePath
-    .transition()
-    .attr(
-      "d",
-      `M ${offsetX + -30} ${pathValues.cordinates} c ${pathValues.line.join(
-        ", "
-      )}`
-    )
-    .duration(100);
+
+  curvePath.attr(
+    "d",
+    `M ${offsetX + -30} ${pathValues.cordinates} c ${pathValues.line.join(
+      ", "
+    )}`
+  );
+  curvePathMirror.attr(
+    "d",
+    `M ${offsetX + -30} ${
+      pathValues.destination === "bottom" ? 40 : 120
+    } c ${pathValues.line.join(", ")}`
+  );
 });
