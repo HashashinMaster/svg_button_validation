@@ -3,7 +3,7 @@ import * as d3 from "d3";
 /**
  * Adding Svg element to the div#app
  */
-const width = 300;
+const width = 600;
 const height = 300;
 const svg = d3
   .select("#app")
@@ -16,12 +16,22 @@ const svg = d3
  */
 const path = svg.append("path");
 
-//h 80 v 40 h -80
+/**
+ * Creating a box with path and initializing
+ * brezier curves
+ */
 path
-  .attr("d", "M 0 0  c 0 0, 0 0, 0 0")
-  .attr("fill", "none")
-  .attr("stroke", "red")
-  .attr("stroke-width", "2px")
-  .transition()
-  .attr("d", "M 10, 20 c 50, -50 100, 50 150, 25”")
-  .delay(500);
+  .attr("d", "M 50 40, h 240 ,v 80, h-240, v-80 c 0 0, 0 0, 0 0  ")
+  .attr("fill", "red")
+  .attr("stroke-width", "2px");
+
+path.on("mousemove", function (e: MouseEvent) {
+  const { clientX, clientY } = e;
+  path
+    .transition()
+    .attr(
+      "d",
+      `M 50 40, h 240 ,v 80, h-240, v-80 ,M ${clientX} ${clientY} c 0 30, 90 30, 90 0, M 50 120, c 0 30, 90 30, 90 0 `
+    )
+    .delay(500);
+});
