@@ -75,16 +75,26 @@ boxPath.on("mouseenter", function (e: MouseEvent) {
 boxPath.on("mousemove", function (e: MouseEvent) {
   const { offsetY, offsetX } = e;
 
-  if (offsetY <= 50 + 20) console.log("ja mn lfo9e");
-  if (offsetY <= 120 + 20 && offsetY > 50 + 20) console.log("ja mn lt7t");
+  // making curve grows when the mouse goes deeper in the top. Yamete ૮⸝⸝> ̫ <⸝⸝ ა
   if (pathValues.destination === "top") {
     pathValues.line[0] = `0 ${offsetY}`;
     pathValues.line[1] = `90 ${offsetY}`;
   } else {
-    pathValues.line[0] = `0 ${-offsetY + 40}`;
-    pathValues.line[1] = `90 ${-offsetY + 40}`;
+  /**
+   * when he goes in the bottom i calculate how much it lost from
+   * it's originals size: original size ((originalSize - boxSize) - (mousePos - originalSize))
+   */
+    pathValues.line[0] = `0 -${
+      40 + (offsetY - 40 > 40 ? 80 - (offsetY - 40) : 40)
+    }`;
+    pathValues.line[1] = `90 -${
+      40 + (offsetY - 40 > 40 ? 80 - (offsetY - 40) : 40)
+    }`;
   }
   /*
+  120-40
+  80
+  78
   , M ${offsetX + -30} ${
         pathValues.destination === "bottom" ? 40 : 120
       } c ${pathValues.line.join(", ")}, M ${offsetX + -30}
