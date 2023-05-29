@@ -19,14 +19,14 @@ const curvePath = svg.append("path");
 const curvePathMirror = svg.append("path");
 
 /**
- * Creating a box path and
+ * @description: Creating a box path and
  */
 boxPath
   .attr("d", `M 30 100, h 240 ,v 80, h-240, v-80`)
   .attr("fill", "red")
   .attr("stroke-width", "2px");
 /**
- * initializing brezier curves
+ * @description: initializing brezier curves
  */
 curvePath
   .attr("d", "c 0 0, 0 0, 0 0, 0 0 ")
@@ -40,7 +40,18 @@ curvePathMirror
   .attr("stroke", "white");
 
 /**
- * Defining the Shape Object to store mouse position
+ * @description: Adding text element to the svg
+ */
+const text = svg.append("text");
+text
+  .text("Login")
+  .attr("x", 115)
+  .attr("y", 145)
+  .attr("fill", "white")
+  .style("font-size", "25px");
+
+/**
+ * @description: Defining the Shape Object to store mouse position
  */
 interface shapeValues {
   cordinates: number;
@@ -54,10 +65,11 @@ const pathValues: shapeValues = {
 };
 
 /**
- * Adding mouse move event to change the brezier curve coordinates
+ * @description: Adding mouse move event to change the brezier curve coordinates
  */
 boxPath.on("mousemove", function (e: MouseEvent) {
   const { offsetY, offsetX } = e;
+  text.text("");
   // Cheking if the mouse enter from top of the box
   if (offsetY <= 100 + 20) {
     pathValues.cordinates = 100;
@@ -65,18 +77,26 @@ boxPath.on("mousemove", function (e: MouseEvent) {
     pathValues.line = ["0 40", "90 40", "90 0"];
   }
   // Cheking if the mouse enters from bottom of the box
-  console.log(offsetX);
   if (offsetY <= 180 + 20 && offsetY > 100 + 20) {
     pathValues.cordinates = 180;
     pathValues.destination = "bottom";
     pathValues.line = ["0 -40", "90 -40", "90 0"];
   }
-  /**
-   * Making curve grows when the mouse goes deeper in the top. Yamete ૮⸝⸝> ̫ <⸝⸝ ა.
-   * Top formula is : (curve size) - ( (mouse position) - box  Y position ).
-   * Bottom formula is : (curve size) - ( (box - Y position) - (mouse position) ).
-   */
+  if (offsetX <= 70) {
+    pathValues.cordinates = 180;
+    pathValues.destination = "bottom";
+    pathValues.line = ["0 -40", "90 -40", "90 0"];
+  }
+  console.log("offsetX", offsetX, "offsetY", offsetY);
+  // if (offsetX <= 170 && offsetY >= 100) {
+  //   console.log("ana f limn");
+  // }
   if (pathValues.destination === "top") {
+    /**
+     * @description: Making curve grows when the mouse goes deeper in the top. Yamete ૮⸝⸝> ̫ <⸝⸝ ა.
+     * Top formula is : (curve size) - ( (mouse position) - box  Y position ).
+     * Bottom formula is : (curve size) - ( (box - Y position) - (mouse position) ).
+     */
     pathValues.line[0] = `0 ${40 + (offsetY - 100)}`; //
     pathValues.line[1] = `90 ${40 + (offsetY - 100)}`;
   } else {
@@ -85,10 +105,9 @@ boxPath.on("mousemove", function (e: MouseEvent) {
   }
 
   /**
-   * checking the curves if they are overflowing from the edges
+   * @description: checking the curves if they are overflowing from the edges
    */
   if (offsetX <= 70) {
-    console.log("i entered  ");
     curvePath.attr(
       "d",
       `M ${offsetX} ${pathValues.cordinates} c ${pathValues.line.join(", ")}`
@@ -127,11 +146,10 @@ boxPath.on("mousemove", function (e: MouseEvent) {
 });
 
 /**
- * Removing the curves after the user leaves the box
+ * @description: Removing the curves after the user leaves the box
+ * @return: void
  */
-curvePath.on("mouseleave", function (e: MouseEvent) {
-  e.stopPropagation();
-  e.stopImmediatePropagation();
+function RemoveCurves() {
   curvePath
     .attr("d", "c 0 0, 0 0, 0 0 ")
     .attr("fill", "white")
@@ -142,4 +160,12 @@ curvePath.on("mouseleave", function (e: MouseEvent) {
     .attr("fill", "red")
     .attr("stroke-width", "2px")
     .attr("stroke", "white");
-});
+  text.text("Login");
+}
+/**
+ * For some reason that beyond my knowledge
+ * when the cursor go left or right event is not workig
+ * so i had to add it on the container as well
+ */
+curvePath.on("mouseleave", RemoveCurves);
+svg.on("mouseleave", RemoveCurves);
