@@ -54,12 +54,10 @@ const pathValues: shapeValues = {
 };
 
 /**
- * adding mouse enter event to know from where
- * the mouse entered the box
+ * Adding mouse move event to change the brezier curve coordinates
  */
-boxPath.on("mouseenter", function (e: MouseEvent) {
-  const { offsetY } = e;
-
+boxPath.on("mousemove", function (e: MouseEvent) {
+  const { offsetY, offsetX } = e;
   // Cheking if the mouse enter from top of the box
   if (offsetY <= 50 + 20) {
     pathValues.cordinates = 40;
@@ -73,14 +71,6 @@ boxPath.on("mouseenter", function (e: MouseEvent) {
     pathValues.destination = "bottom";
     pathValues.line = ["0 -40", "90 -40", "90 0"];
   }
-});
-
-/**
- * Adding mouse move event to change the brezier curve coordinates
- */
-boxPath.on("mousemove", function (e: MouseEvent) {
-  const { offsetY, offsetX } = e;
-
   // making curve grows when the mouse goes deeper in the top. Yamete ૮⸝⸝> ̫ <⸝⸝ ა
   if (pathValues.destination === "top") {
     pathValues.line[0] = `0 ${offsetY}`;
@@ -98,16 +88,61 @@ boxPath.on("mousemove", function (e: MouseEvent) {
     }`;
   }
 
-  curvePath.attr(
-    "d",
-    `M ${offsetX + -30} ${pathValues.cordinates} c ${pathValues.line.join(
-      ", "
-    )}`
-  );
-  curvePathMirror.attr(
-    "d",
-    `M ${offsetX + -30} ${
-      pathValues.destination === "bottom" ? 40 : 120
-    } c ${pathValues.line.join(", ")}`
-  );
+  /**
+   * checking the curves if they are overflowing from the edges
+   */
+  if (offsetX <= 80) {
+    curvePath.attr(
+      "d",
+      `M ${offsetX} ${pathValues.cordinates} c ${pathValues.line.join(", ")}`
+    );
+    curvePathMirror.attr(
+      "d",
+      `M ${offsetX} ${
+        pathValues.destination === "bottom" ? 40 : 120
+      } c ${pathValues.line.join(", ")}`
+    );
+  } else if (offsetX >= 242) {
+    curvePath.attr(
+      "d",
+      `M ${241 - 40} ${pathValues.cordinates} c ${pathValues.line.join(", ")}`
+    );
+    curvePathMirror.attr(
+      "d",
+      `M ${241 - 40} ${
+        pathValues.destination === "bottom" ? 40 : 120
+      } c ${pathValues.line.join(", ")}`
+    );
+  } else {
+    curvePath.attr(
+      "d",
+      `M ${offsetX - 30} ${pathValues.cordinates} c ${pathValues.line.join(
+        ", "
+      )}`
+    );
+    curvePathMirror.attr(
+      "d",
+      `M ${offsetX - 30} ${
+        pathValues.destination === "bottom" ? 40 : 120
+      } c ${pathValues.line.join(", ")}`
+    );
+  }
+});
+
+/**
+ * Removing curves after the user leaves the box
+ */
+curvePath.on("mouseleave", function (e: MouseEvent) {
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+  curvePath
+    .attr("d", "c 0 0, 0 0, 0 0 ")
+    .attr("fill", "white")
+    .attr("stroke-width", "2px")
+    .attr("stroke", "white");
+  curvePathMirror
+    .attr("d", "c 0 0, 0 0, 0 0 ")
+    .attr("fill", "red")
+    .attr("stroke-width", "2px")
+    .attr("stroke", "white");
 });
