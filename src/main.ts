@@ -82,11 +82,6 @@ boxPath.on("mousemove", function (e: MouseEvent) {
     pathValues.destination = "bottom";
     pathValues.line = ["0 -40", "90 -40", "90 0"];
   }
-  if (offsetX <= 70) {
-    pathValues.cordinates = 180;
-    pathValues.destination = "bottom";
-    pathValues.line = ["0 -40", "90 -40", "90 0"];
-  }
   console.log("offsetX", offsetX, "offsetY", offsetY);
   // if (offsetX <= 170 && offsetY >= 100) {
   //   console.log("ana f limn");
