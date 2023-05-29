@@ -4,25 +4,15 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>Vite + TS</title>
-    <style>
-      * {
-        padding: 0;
-        margin: 0;
-      }
-    </style>
   </head>
   <body>
-    <div
-      style="
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      "
-      id="app"
-    ></div>
+    <div id="app">
+      <input type="text" placeholder="User Name" />
+      <input type="email" placeholder="Email" required />
+      <input type="password" placeholder="password" />
+    </div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
