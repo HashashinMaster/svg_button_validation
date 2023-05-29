@@ -68,7 +68,9 @@ const pathValues: shapeValues = {
 /**
  * @description: Adding mouse move event to change the brezier curve coordinates
  */
+let startTyping = false;
 boxPath.on("mousemove", function (e: MouseEvent) {
+  if (document.querySelectorAll(".error").length < 1 && startTyping) return;
   const { offsetY, offsetX } = e;
   svg.style("z-index", "2");
   text.text("");
@@ -84,7 +86,6 @@ boxPath.on("mousemove", function (e: MouseEvent) {
     pathValues.destination = "bottom";
     pathValues.line = ["0 -40", "90 -40", "90 0"];
   }
-  console.log("offsetX", offsetX, "offsetY", offsetY);
   // if (offsetX <= 170 && offsetY >= 100) {
   //   console.log("ana f limn");
   // }
@@ -174,6 +175,7 @@ svg.on("mouseleave", removeCurves);
 let EMAIL_REGEX = /\S+@\S+\.\S+/;
 document.querySelectorAll("input").forEach((input: HTMLInputElement) => {
   input.addEventListener("input", function () {
+    if (!startTyping) startTyping = true;
     if (this.id === "userName" && this.value.length < 3) {
       this.classList.add("error");
     } else if (this.type === "email" && !EMAIL_REGEX.test(this.value)) {
