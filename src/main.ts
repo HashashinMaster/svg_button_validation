@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 /**
- * Adding Svg element to the div#app
+ * @description: Adding Svg element to the div#app
  */
 const width = 300;
 const height = 300;
@@ -13,7 +13,7 @@ const svg = d3
   .attr("height", height);
 
 /**
- * adding boxPath and curvePath elements to the svg
+ * @description: adding boxPath and curvePath elements to the svg
  */
 const boxPath = svg.append("path");
 const curvePath = svg.append("path");
@@ -161,9 +161,33 @@ function removeCurves() {
   svg.style("z-index", "");
 }
 /**
- * For some reason that beyond my knowledge
+ * @description: For some reason that beyond my knowledge
  * when the cursor go left or right event is not workig
  * so i had to add it on the container as well
  */
 curvePath.on("mouseleave", removeCurves);
 svg.on("mouseleave", removeCurves);
+
+/**
+ * @description: Adding inputs Validation
+ */
+let EMAIL_REGEX = /\S+@\S+\.\S+/;
+document.querySelectorAll("input").forEach((input: HTMLInputElement) => {
+  input.addEventListener("input", function () {
+    if (this.id === "userName" && this.value.length < 3) {
+      this.classList.add("error");
+    } else if (this.type === "email" && !EMAIL_REGEX.test(this.value)) {
+      this.classList.add("error");
+    } else if (this.id === "pass" && this.value.length < 9) {
+      this.classList.add("error");
+    } else if (
+      this.id === "confirm" &&
+      this.value.length < 9 &&
+      this.value != (document.querySelector("#pass") as HTMLInputElement).value
+    ) {
+      this.classList.add("error");
+    } else {
+      this.classList.remove("error");
+    }
+  });
+});
