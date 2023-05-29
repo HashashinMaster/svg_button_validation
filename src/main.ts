@@ -149,7 +149,7 @@ boxPath.on("mousemove", function (e: MouseEvent) {
  * @description: Removing the curves after the user leaves the box
  * @return: void
  */
-function RemoveCurves() {
+function removeCurves() {
   curvePath
     .attr("d", "c 0 0, 0 0, 0 0 ")
     .attr("fill", "white")
@@ -167,5 +167,5 @@ function RemoveCurves() {
  * when the cursor go left or right event is not workig
  * so i had to add it on the container as well
  */
-curvePath.on("mouseleave", RemoveCurves);
-svg.on("mouseleave", RemoveCurves);
+curvePath.on("mouseleave", removeCurves);
+svg.on("mouseleave", removeCurves);
