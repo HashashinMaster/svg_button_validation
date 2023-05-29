@@ -5,6 +5,7 @@ import * as d3 from "d3";
  */
 const width = 300;
 const height = 300;
+const svgColor = "#007fff";
 const svg = d3
   .select("#app")
   .append("svg")
@@ -23,7 +24,7 @@ const curvePathMirror = svg.append("path");
  */
 boxPath
   .attr("d", `M 30 100, h 240 ,v 80, h-240, v-80`)
-  .attr("fill", "red")
+  .attr("fill", svgColor)
   .attr("stroke-width", "2px");
 /**
  * @description: initializing brezier curves
@@ -35,7 +36,7 @@ curvePath
   .attr("stroke", "white");
 curvePathMirror
   .attr("d", "c 0 0, 0 0, 0 0, 0 0 ")
-  .attr("fill", "red")
+  .attr("fill", svgColor)
   .attr("stroke-width", "2px")
   .attr("stroke", "white");
 
@@ -69,6 +70,7 @@ const pathValues: shapeValues = {
  */
 boxPath.on("mousemove", function (e: MouseEvent) {
   const { offsetY, offsetX } = e;
+  svg.style("z-index", "2");
   text.text("");
   // Cheking if the mouse enter from top of the box
   if (offsetY <= 100 + 20) {
@@ -152,10 +154,11 @@ function removeCurves() {
     .attr("stroke", "white");
   curvePathMirror
     .attr("d", "c 0 0, 0 0, 0 0 ")
-    .attr("fill", "red")
+    .attr("fill", "#007fff")
     .attr("stroke-width", "2px")
     .attr("stroke", "white");
   text.text("Login");
+  svg.style("z-index", "");
 }
 /**
  * For some reason that beyond my knowledge
