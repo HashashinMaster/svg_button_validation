@@ -30,12 +30,12 @@ boxPath
  * @description: initializing brezier curves
  */
 curvePath
-  .attr("d", "c 0 0, 0 0, 0 0, 0 0 ")
+  .attr("d", "c 0 0, 0 0, 0 0 ")
   .attr("fill", "white")
   .attr("stroke-width", "2px")
   .attr("stroke", "white");
 curvePathMirror
-  .attr("d", "c 0 0, 0 0, 0 0, 0 0 ")
+  .attr("d", "c 0 0, 0 0, 0 0")
   .attr("fill", svgColor)
   .attr("stroke-width", "2px")
   .attr("stroke", "white");
@@ -82,14 +82,25 @@ function brezierCurveEffect(e: MouseEvent) {
     pathValues.cordinates = 100;
     pathValues.destination = "top";
     pathValues.line = ["0 40", "90 40", "90 0"];
-    new Audio("src/assets/sounds/Bonk.mp3").play();
+    if (
+      (d3.select("#play-audio").node() as HTMLLabelElement).dataset.play ===
+      "true"
+    ) {
+      new Audio("src/assets/sounds/Bonk.mp3").play();
+    }
   }
   // Cheking if the mouse enters from bottom of the box
   if (offsetY <= 180 + 20 && offsetY > 100 + 20) {
     pathValues.cordinates = 180;
     pathValues.destination = "bottom";
     pathValues.line = ["0 -40", "90 -40", "90 0"];
-    new Audio("src/assets/sounds/Bonk.mp3").play();
+
+    if (
+      (d3.select("#play-audio").node() as HTMLLabelElement).dataset.play ===
+      "true"
+    ) {
+      new Audio("src/assets/sounds/Bonk.mp3").play();
+    }
   }
   // if (offsetX <= 170 && offsetY >= 100) {
   //   console.log("ana f limn");
@@ -199,4 +210,20 @@ document.querySelectorAll("input").forEach((input: HTMLInputElement) => {
       this.classList.remove("error");
     }
   });
+});
+d3.select("#play-audio").on("click", (e: Event) => {
+  const label = e.currentTarget as HTMLLabelElement;
+
+  if (label.dataset.play === "true") {
+    console.log("im called");
+    label.innerHTML =
+      "Audio is <strong>Disabled</strong>. Click here to enable it";
+    label.style.color = "Red";
+    label.dataset.play = "false";
+  } else {
+    label.innerHTML =
+      "Audio is <strong>Enabled</strong>. Click here to disable it";
+    label.style.color = "blue";
+    label.dataset.play = "true";
+  }
 });
