@@ -55,3 +55,11 @@ label {
   color: red;
   cursor: pointer;
 }
+@keyframes laughing {
+  from {
+    transform: translateY(1px);
+  }
+  to {
+    transform: translateY(-1px);
+  }
+}

@@ -66,13 +66,14 @@ const pathValues: shapeValues = {
 };
 
 boxPath.on("mousemove", brezierCurveEffect);
-
 /**
  * @description: Adding mouse move event to change the brezier curve coordinates
  * @returns: void
  */
 let startTyping = false;
 function brezierCurveEffect(e: MouseEvent) {
+  boxStopLaughing();
+
   if (document.querySelectorAll(".error").length < 1 && startTyping) return;
   const { offsetY, offsetX } = e;
   svg.style("z-index", "2");
@@ -82,10 +83,7 @@ function brezierCurveEffect(e: MouseEvent) {
     pathValues.cordinates = 100;
     pathValues.destination = "top";
     pathValues.line = ["0 40", "90 40", "90 0"];
-    if (
-      (d3.select("#play-audio").node() as HTMLLabelElement).dataset.play ===
-      "true"
-    ) {
+    if (isAudioEnabled()) {
       new Audio("src/assets/sounds/Bonk.mp3").play();
     }
   }
@@ -95,10 +93,7 @@ function brezierCurveEffect(e: MouseEvent) {
     pathValues.destination = "bottom";
     pathValues.line = ["0 -40", "90 -40", "90 0"];
 
-    if (
-      (d3.select("#play-audio").node() as HTMLLabelElement).dataset.play ===
-      "true"
-    ) {
+    if (isAudioEnabled()) {
       new Audio("src/assets/sounds/Bonk.mp3").play();
     }
   }
@@ -176,15 +171,22 @@ function removeCurves() {
     .attr("fill", "#007fff")
     .attr("stroke-width", "2px")
     .attr("stroke", "white");
-  text.text("Login");
   svg.style("z-index", "");
 }
+
+/**
+ * @description: Adding events
+ */
+curvePath.on("mouseleave", () => {
+  removeCurves();
+  boxLaughing();
+});
+
 /**
  * @description: For some reason that beyond my knowledge
  * when the cursor go left or right event is not workig
  * so i had to add it on the container as well
  */
-curvePath.on("mouseleave", removeCurves);
 svg.on("mouseleave", removeCurves);
 
 /**
@@ -211,11 +213,14 @@ document.querySelectorAll("input").forEach((input: HTMLInputElement) => {
     }
   });
 });
+
+/**
+ * @description: audio toggle event
+ */
 d3.select("#play-audio").on("click", (e: Event) => {
   const label = e.currentTarget as HTMLLabelElement;
 
   if (label.dataset.play === "true") {
-    console.log("im called");
     label.innerHTML =
       "Audio is <strong>Disabled</strong>. Click here to enable it";
     label.style.color = "Red";
@@ -227,3 +232,60 @@ d3.select("#play-audio").on("click", (e: Event) => {
     label.dataset.play = "true";
   }
 });
+/**
+ * @description: Making box laugh and stop laughing
+ * @returns: void
+ */
+const laughSound = new Audio("src/assets/sounds/laugh.mp3");
+
+async function boxLaughing() {
+  if (isAudioEnabled()) {
+    boxPath.style("animation", "laughing 0.1s infinite");
+    text.style("animation", "laughing 0.1s infinite");
+    laughSound.load();
+    laughSound.play();
+  }
+  badWordGenerator();
+}
+function boxStopLaughing() {
+  boxPath.style("animation", "");
+  text.style("animation", "");
+  removeBadword();
+  if (isAudioEnabled()) {
+    laughSound.pause();
+  }
+}
+
+/**
+ * @description: stoping box laugh animatiom after the laugh end
+ */
+laughSound.addEventListener("ended", () => {
+  boxStopLaughing();
+});
+
+/**
+ * @description: checks if audio is playing
+ * @returns Boolean
+ */
+function isAudioEnabled() {
+  return (
+    (d3.select("#play-audio").node() as HTMLLabelElement).dataset.play ===
+    "true"
+  );
+}
+
+let swears: Array<string>;
+(async () => {
+  swears = await (await fetch("src/data/swears.json")).json();
+})();
+function badWordGenerator() {
+  text.text(swears[Math.floor(Math.random() * swears.length)]);
+}
+function removeBadword() {
+  text.text("Login");
+  setTimeout(() => {
+    if (!isAudioEnabled()) {
+      text.text("Login");
+    }
+  }, 2000);
+}
