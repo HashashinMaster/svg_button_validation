@@ -65,11 +65,14 @@ const pathValues: shapeValues = {
   destination: "",
 };
 
+boxPath.on("mousemove", brezierCurveEffect);
+
 /**
  * @description: Adding mouse move event to change the brezier curve coordinates
+ * @returns: void
  */
 let startTyping = false;
-boxPath.on("mousemove", function (e: MouseEvent) {
+function brezierCurveEffect(e: MouseEvent) {
   if (document.querySelectorAll(".error").length < 1 && startTyping) return;
   const { offsetY, offsetX } = e;
   svg.style("z-index", "2");
@@ -79,12 +82,14 @@ boxPath.on("mousemove", function (e: MouseEvent) {
     pathValues.cordinates = 100;
     pathValues.destination = "top";
     pathValues.line = ["0 40", "90 40", "90 0"];
+    new Audio("src/assets/sounds/Bonk.mp3").play();
   }
   // Cheking if the mouse enters from bottom of the box
   if (offsetY <= 180 + 20 && offsetY > 100 + 20) {
     pathValues.cordinates = 180;
     pathValues.destination = "bottom";
     pathValues.line = ["0 -40", "90 -40", "90 0"];
+    new Audio("src/assets/sounds/Bonk.mp3").play();
   }
   // if (offsetX <= 170 && offsetY >= 100) {
   //   console.log("ana f limn");
@@ -141,11 +146,13 @@ boxPath.on("mousemove", function (e: MouseEvent) {
       } c ${pathValues.line.join(", ")}`
     );
   }
-});
-
+}
+/**
+ *
+ */
 /**
  * @description: Removing the curves after the user leaves the box
- * @return: void
+ * @returns: void
  */
 function removeCurves() {
   curvePath
@@ -172,7 +179,7 @@ svg.on("mouseleave", removeCurves);
 /**
  * @description: Adding inputs Validation
  */
-let EMAIL_REGEX = /\S+@\S+\.\S+/;
+const EMAIL_REGEX = /\S+@\S+\.\S+/;
 document.querySelectorAll("input").forEach((input: HTMLInputElement) => {
   input.addEventListener("input", function () {
     if (!startTyping) startTyping = true;

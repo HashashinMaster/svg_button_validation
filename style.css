@@ -39,3 +39,6 @@ svg {
 path {
   cursor: pointer;
 }
+audio {
+  display: none;
+}
