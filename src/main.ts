@@ -70,6 +70,7 @@ const pathValues: shapeValues = {
 };
 
 boxPath.on("mousemove", nunjutsuEffect);
+
 /**
  * @description: Adding mouse move event to change the brezier curve coordinates
  * @returns: void
@@ -312,15 +313,10 @@ function nunjutsuEffect() {
   svg.style("animation", "nunjutsuHiding 0.5s");
 }
 //changing box position after animation end
-svg.on("animationend", function (e: AnimationEvent) {
-  // Update the box position
+svg.on("animationend", handleAnimation);
+svg.on("animationstart", (e: AnimationEvent) => {
   if (e.animationName === "nunjutsuHiding") {
-    const { xRandomPosition, yRandomPosition } = generateBoxPosition();
-    svg.style("position", "absolute");
-    svg.style("z-index", "4");
-    svg.style("top", yRandomPosition);
-    svg.style("right", xRandomPosition);
-    svg.style("animation", "nunjutsuShowing .5s");
+    d3.select("img").remove();
   }
 });
 interface positions {
@@ -370,4 +366,27 @@ function generateBoxPosition(): positions {
     xRandomPosition,
     yRandomPosition,
   };
+}
+
+function handleAnimation(e: AnimationEvent) {
+  // Update the box position
+  if (e.animationName === "nunjutsuHiding") {
+    const { xRandomPosition, yRandomPosition } = generateBoxPosition();
+    d3.select("img").remove();
+    svg.style("position", "absolute");
+    svg.style("z-index", "4");
+    svg.style("top", yRandomPosition);
+    svg.style("right", xRandomPosition);
+    svg.style("animation", "nunjutsuShowing .5s");
+    const mouthImage = new Image();
+    mouthImage.src = "src/assets/pictures/mouth.gif";
+    mouthImage.onmouseenter = nunjutsuEffect;
+    mouthImage.style.position = "absolute";
+    mouthImage.width = 120;
+    mouthImage.style.top = yRandomPosition.toString() + "px";
+    mouthImage.style.right = (xRandomPosition + 90).toString() + "px";
+    mouthImage.style.zIndex = "6";
+    text.text("");
+    document.body.append(mouthImage);
+  }
 }

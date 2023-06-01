@@ -86,3 +86,7 @@ label {
     opacity: 1;
   }
 }
+video {
+  filter: url(#filter);
+  clip-path: url(#circle);
+}
