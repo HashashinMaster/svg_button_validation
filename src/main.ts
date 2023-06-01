@@ -69,7 +69,7 @@ const pathValues: shapeValues = {
   destination: "",
 };
 
-boxPath.on("mousemove", brezierCurveEffect);
+boxPath.on("mousemove", nunjutsuEffect);
 /**
  * @description: Adding mouse move event to change the brezier curve coordinates
  * @returns: void
@@ -181,17 +181,17 @@ function removeCurves() {
 /**
  * @description: Adding events
  */
-curvePath.on("mouseleave", () => {
-  removeCurves();
-  boxLaughing();
-});
+// curvePath.on("mouseleave", () => {
+//   removeCurves();
+//   boxLaughing();
+// });
 
 /**
  * @description: For some reason that beyond my knowledge
  * when the cursor go left or right event is not workig
  * so i had to add it on the container as well
  */
-svg.on("mouseleave", removeCurves);
+// svg.on("mouseleave", removeCurves);
 
 /**
  * @description: Adding inputs Validation
@@ -304,3 +304,53 @@ function removeBadword() {
     }
   }, 3000);
 }
+
+function nunjutsuEffect(e: MouseEvent) {
+  // Get the dimensions and position of the inputs container
+  const inputsPos = (
+    d3.select("#inputs-container").node() as HTMLDivElement
+  ).getBoundingClientRect();
+
+  const boxWidth = 250; // Width of the box
+  const boxHeight = 90; // Height of the box
+
+  // Calculate the maximum allowed x and y positions
+  const maxX = window.innerWidth - boxWidth;
+  const maxY = window.innerHeight - boxHeight;
+
+  // Calculate random positions within the allowed range
+  const xRandomPosition = Math.floor(Math.random() * maxX);
+  const yRandomPosition = Math.floor(Math.random() * maxY);
+
+  // Check if the randomly generated position overlaps with the inputs container
+  const overlapsInputs =
+    xRandomPosition >= inputsPos.left &&
+    xRandomPosition <= inputsPos.right &&
+    yRandomPosition >= inputsPos.top &&
+    yRandomPosition <= inputsPos.bottom;
+
+  console.log(maxX, maxY);
+  /**
+   * If the position overlaps with the inputs container, generate new positions
+   * until a non-overlapping position is found
+   */
+  if (overlapsInputs) {
+    nunjutsuEffect(e); // Recursively call the function to generate new positions
+    return; // Exit the current function execution
+  }
+
+  // Update the box position
+  svg.style("position", "fixed");
+  svg.style("z-index", "4");
+  svg.style("top", yRandomPosition);
+  svg.style("right", xRandomPosition);
+}
+
+window.onclick = (e) => {
+  const inputsPos = (
+    d3.select("#inputs-container").node() as HTMLDivElement
+  ).getBoundingClientRect();
+  console.log(inputsPos);
+  console.log(window.innerWidth);
+  console.log(window.innerHeight);
+};
