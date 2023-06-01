@@ -39,17 +39,21 @@ curvePathMirror
   .attr("fill", svgColor)
   .attr("stroke-width", "2px")
   .attr("stroke", "white");
-
 /**
  * @description: Adding text element to the svg
  */
 const text = svg.append("text");
 text
   .text("Login")
-  .attr("x", 115)
-  .attr("y", 145)
+  .attr("x", 145)
+  .attr("y", 142)
   .attr("fill", "white")
+  .attr("dominant-baseline", "middle")
+  .attr("textLength", "75px")
+  .attr("lengthAdjust", "spacingAndGlyphs")
+  .attr("text-anchor", "middle")
   .style("font-size", "25px");
+console.log(text.node()!.textLength);
 
 /**
  * @description: Defining the Shape Object to store mouse position
@@ -273,19 +277,30 @@ function isAudioEnabled() {
     "true"
   );
 }
-
+/**
+ * @description: fetching swears
+ */
 let swears: Array<string>;
 (async () => {
   swears = await (await fetch("src/data/swears.json")).json();
 })();
+/**
+ * @description: Generating bad word
+ * @returns: void
+ */
 function badWordGenerator() {
   text.text(swears[Math.floor(Math.random() * swears.length)]);
 }
+
+/**
+ * @description: removing the bad word
+ * @returns: void
+ */
 function removeBadword() {
   text.text("Login");
   setTimeout(() => {
     if (!isAudioEnabled()) {
       text.text("Login");
     }
-  }, 2000);
+  }, 3000);
 }
