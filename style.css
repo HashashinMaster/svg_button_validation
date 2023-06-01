@@ -70,8 +70,19 @@ label {
     transform: translateY(-1px);
   }
 }
-@keyframes nunjutSu {
+@keyframes nunjutsuHiding {
+  from {
+    opacity: 1;
+  }
   to {
     opacity: 0;
+  }
+}
+@keyframes nunjutsuShowing {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

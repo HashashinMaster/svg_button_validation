@@ -304,8 +304,35 @@ function removeBadword() {
     }
   }, 3000);
 }
-
-function nunjutsuEffect(e: MouseEvent) {
+/**
+ * @description: Starting hiding animation
+ * @returns: void
+ */
+function nunjutsuEffect() {
+  svg.style("animation", "nunjutsuHiding 0.5s");
+}
+//changing box position after animation end
+svg.on("animationend", function (e: AnimationEvent) {
+  // Update the box position
+  if (e.animationName === "nunjutsuHiding") {
+    const { xRandomPosition, yRandomPosition } = generateBoxPosition();
+    svg.style("position", "absolute");
+    svg.style("z-index", "4");
+    svg.style("top", yRandomPosition);
+    svg.style("right", xRandomPosition);
+    svg.style("animation", "nunjutsuShowing .5s");
+  }
+});
+interface positions {
+  xRandomPosition: number;
+  yRandomPosition: number;
+}
+/**
+ * @description: get random x and y position
+ * based on window width and height
+ * @returns object with random x and y position
+ */
+function generateBoxPosition(): positions {
   // Get the dimensions and position of the inputs container
   const inputsPos = (
     d3.select("#inputs-container").node() as HTMLDivElement
@@ -329,28 +356,18 @@ function nunjutsuEffect(e: MouseEvent) {
     yRandomPosition >= inputsPos.top &&
     yRandomPosition <= inputsPos.bottom;
 
-  console.log(maxX, maxY);
   /**
    * If the position overlaps with the inputs container, generate new positions
    * until a non-overlapping position is found
    */
   if (overlapsInputs) {
-    nunjutsuEffect(e); // Recursively call the function to generate new positions
-    return; // Exit the current function execution
+    const result = generateBoxPosition(); // Recursively call the function to generate new positions
+    if (result !== undefined) {
+      return result;
+    }
   }
-
-  // Update the box position
-  svg.style("position", "fixed");
-  svg.style("z-index", "4");
-  svg.style("top", yRandomPosition);
-  svg.style("right", xRandomPosition);
+  return {
+    xRandomPosition,
+    yRandomPosition,
+  };
 }
-
-window.onclick = (e) => {
-  const inputsPos = (
-    d3.select("#inputs-container").node() as HTMLDivElement
-  ).getBoundingClientRect();
-  console.log(inputsPos);
-  console.log(window.innerWidth);
-  console.log(window.innerHeight);
-};
