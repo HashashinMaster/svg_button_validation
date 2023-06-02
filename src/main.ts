@@ -200,6 +200,8 @@ function removeCurves() {
 const EMAIL_REGEX = /\S+@\S+\.\S+/;
 document.querySelectorAll("input").forEach((input: HTMLInputElement) => {
   input.addEventListener("input", function () {
+    svg.style("position", "relative");
+    svg.style("animation", "");
     if (!startTyping) startTyping = true;
     if (this.id === "userName" && this.value.length < 3) {
       this.classList.add("error");
@@ -347,9 +349,9 @@ function generateBoxPosition(): positions {
 
   // Check if the randomly generated position overlaps with the inputs container
   const overlapsInputs =
-    xRandomPosition >= inputsPos.left &&
+    xRandomPosition + boxWidth >= inputsPos.left &&
     xRandomPosition <= inputsPos.right &&
-    yRandomPosition >= inputsPos.top &&
+    yRandomPosition + boxHeight >= inputsPos.top &&
     yRandomPosition <= inputsPos.bottom;
 
   /**
@@ -392,11 +394,16 @@ function handleAnimation(e: AnimationEvent) {
         Math.random() * (6 - 1 + 1) + 1
       )}.mp3`
     );
+
     laughAudio.addEventListener("ended", function () {
       this.remove();
       mouthImage.remove();
+      text.text("Login");
     });
     document.body.append(mouthImage);
+    if (!isAudioEnabled()) {
+      laughAudio.volume = 0;
+    }
     laughAudio.play();
   }
 }
