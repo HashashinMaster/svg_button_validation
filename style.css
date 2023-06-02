@@ -35,7 +35,7 @@ body #app {
   border: 2px solid #007fff;
 }
 .error {
-  border: 2px solid red;
+  border: 2px solid red !important;
 }
 #app > div > input::placeholder {
   padding: 10px;

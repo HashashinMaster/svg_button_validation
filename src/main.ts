@@ -74,10 +74,17 @@ const pathValues: shapeValues = {
  * @returns: void
  */
 let startTyping = false;
+function allGood() {
+  return (
+    document.querySelectorAll<HTMLInputElement>(".error").length < 1 ||
+    Array.from(document.querySelectorAll<HTMLInputElement>("input")).find(
+      (e: HTMLInputElement) => e.value.length < 1
+    ) != undefined
+  );
+}
 function brezierCurveEffect(e: MouseEvent) {
   boxStopLaughing();
 
-  if (document.querySelectorAll(".error").length < 1 && startTyping) return;
   const { offsetY, offsetX } = e;
   svg.style("z-index", "2");
   text.text("");
@@ -182,6 +189,8 @@ let currentEffect = "Nunjutsu Effect";
 let resetEvent = false;
 boxPath.on("mousemove", function (e: MouseEvent) {
   resetEvent = true;
+  if (!allGood()) return;
+
   if (currentEffect === "Nunjutsu Effect") nunjutsuEffect();
   else {
     brezierCurveEffect(e);
@@ -210,8 +219,10 @@ document.querySelectorAll("input").forEach((input: HTMLInputElement) => {
     svg.style("position", "relative");
     svg.style("top", 0);
     svg.style("right", 0);
+    svg.style("animation", "");
     document.querySelectorAll("img").forEach((e) => e.remove());
     text.text("Login");
+    // toggling effects
     if (resetEvent) {
       resetEvent = false;
       currentEffect =
@@ -220,8 +231,6 @@ document.querySelectorAll("input").forEach((input: HTMLInputElement) => {
           : "Nunjutsu Effect";
       console.log(currentEffect);
     }
-    svg.style("position", "relative");
-    svg.style("animation", "");
     if (!startTyping) startTyping = true;
     if (this.id === "userName" && this.value.length < 3) {
       this.classList.add("error");
