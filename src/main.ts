@@ -69,8 +69,6 @@ const pathValues: shapeValues = {
   destination: "",
 };
 
-boxPath.on("mousemove", nunjutsuEffect);
-
 /**
  * @description: Adding mouse move event to change the brezier curve coordinates
  * @returns: void
@@ -102,9 +100,7 @@ function brezierCurveEffect(e: MouseEvent) {
       new Audio("src/assets/sounds/Bonk.mp3").play();
     }
   }
-  // if (offsetX <= 170 && offsetY >= 100) {
-  //   console.log("ana f limn");
-  // }
+
   if (pathValues.destination === "top") {
     /**
      * @description: Making curve grows when the mouse goes deeper in the top. Yamete ૮⸝⸝> ̫ <⸝⸝ ა.
@@ -182,17 +178,27 @@ function removeCurves() {
 /**
  * @description: Adding events
  */
-// curvePath.on("mouseleave", () => {
-//   removeCurves();
-//   boxLaughing();
-// });
+let currentEffect = "Nunjutsu Effect";
+let resetEvent = false;
+boxPath.on("mousemove", function (e: MouseEvent) {
+  resetEvent = true;
+  if (currentEffect === "Nunjutsu Effect") nunjutsuEffect();
+  else {
+    brezierCurveEffect(e);
+  }
+});
+
+curvePath.on("mouseleave", () => {
+  removeCurves();
+  boxLaughing();
+});
 
 /**
  * @description: For some reason that beyond my knowledge
  * when the cursor go left or right event is not workig
  * so i had to add it on the container as well
  */
-// svg.on("mouseleave", removeCurves);
+svg.on("mouseleave", removeCurves);
 
 /**
  * @description: Adding inputs Validation
@@ -200,6 +206,20 @@ function removeCurves() {
 const EMAIL_REGEX = /\S+@\S+\.\S+/;
 document.querySelectorAll("input").forEach((input: HTMLInputElement) => {
   input.addEventListener("input", function () {
+    //reset box
+    svg.style("position", "relative");
+    svg.style("top", 0);
+    svg.style("right", 0);
+    document.querySelectorAll("img").forEach((e) => e.remove());
+    text.text("Login");
+    if (resetEvent) {
+      resetEvent = false;
+      currentEffect =
+        currentEffect === "Nunjutsu Effect"
+          ? "Brezier Effect"
+          : "Nunjutsu Effect";
+      console.log(currentEffect);
+    }
     svg.style("position", "relative");
     svg.style("animation", "");
     if (!startTyping) startTyping = true;
@@ -380,30 +400,38 @@ function handleAnimation(e: AnimationEvent) {
     svg.style("top", yRandomPosition);
     svg.style("right", xRandomPosition);
     svg.style("animation", "nunjutsuShowing .5s");
+    //Adding mouth gif
     const mouthImage = new Image();
     mouthImage.src = "src/assets/pictures/mouth.gif";
+    //Making event works on the mouth aswell
     mouthImage.onmouseenter = nunjutsuEffect;
-    mouthImage.style.position = "absolute";
     mouthImage.width = 120;
+    //Changing mouth position
+    mouthImage.style.position = "absolute";
     mouthImage.style.top = yRandomPosition.toString() + "px";
     mouthImage.style.right = (xRandomPosition + 90).toString() + "px";
     mouthImage.style.zIndex = "6";
+    //removing login text
     text.text("");
+    //adding laugh sound
     const laughAudio = new Audio(
       `src/assets/sounds/nunjutsu laughs/${Math.floor(
         Math.random() * (6 - 1 + 1) + 1
       )}.mp3`
     );
-
+    //reset things after sound event ends
     laughAudio.addEventListener("ended", function () {
       this.remove();
       mouthImage.remove();
       text.text("Login");
     });
+    //adding mounth image to the body
     document.body.append(mouthImage);
+    //checking if audio is enabled
     if (!isAudioEnabled()) {
       laughAudio.volume = 0;
     }
+    //playing the audio
     laughAudio.play();
   }
 }
