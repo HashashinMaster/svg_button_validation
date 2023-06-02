@@ -387,6 +387,16 @@ function handleAnimation(e: AnimationEvent) {
     mouthImage.style.right = (xRandomPosition + 90).toString() + "px";
     mouthImage.style.zIndex = "6";
     text.text("");
+    const laughAudio = new Audio(
+      `src/assets/sounds/nunjutsu laughs/${Math.floor(
+        Math.random() * (6 - 1 + 1) + 1
+      )}.mp3`
+    );
+    laughAudio.addEventListener("ended", function () {
+      this.remove();
+      mouthImage.remove();
+    });
     document.body.append(mouthImage);
+    laughAudio.play();
   }
 }
